@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS phones
 (
 	id_phones SERIAL PRIMARY KEY,
 	id_contacts INT NOT NULL,
-	phone_number VARCHAR(50) NOT NULL
+	phone_number VARCHAR(25) NOT NULL
 );
 
 CREATE UNIQUE INDEX phones_idContact_PhoneNumber
