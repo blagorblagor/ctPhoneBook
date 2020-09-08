@@ -10,8 +10,8 @@ CREATE TABLE IF NOT EXISTS accounts
 	user_password VARCHAR(50) NOT NULL
 );
 
-CREATE UNIQUE INDEX accounts_user_email
-ON accounts(user_email);
+CREATE UNIQUE INDEX accounts_user_name
+ON accounts(user_name);
 
 -- *******************
 
@@ -23,9 +23,6 @@ CREATE TABLE IF NOT EXISTS contacts
 	nickname VARCHAR(50) DEFAULT NULL,
 	surname VARCHAR(50) DEFAULT NULL
 );
-
-CREATE UNIQUE INDEX contacts_name
-ON contacts(name);
 
 ALTER TABLE contacts
 ADD CONSTRAINT contacts_idAcount_accounts_idAcount
