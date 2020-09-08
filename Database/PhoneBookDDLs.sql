@@ -6,7 +6,7 @@ ENCODING = UTF8;
 CREATE TABLE IF NOT EXISTS accounts
 (
 	id_accounts SERIAL PRIMARY KEY,
-	user_email VARCHAR(50) NOT NULL,
+	user_name VARCHAR(50) NOT NULL,
 	user_password VARCHAR(50) NOT NULL
 );
 
