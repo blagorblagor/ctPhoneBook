@@ -1,8 +1,3 @@
-/* 
-    Created on : Aug 29, 2019, 8:10:48 PM
-    Author     : goran
-*/
-
 /* global ajaxSupport_main, modalSupport_main */
 
 var index_main = {
@@ -14,11 +9,14 @@ var index_main = {
     ////////////////////////////////////////////////////
     
     pageOnLoad: function() {
-        //localStorage.removeItem("idUserName"); //FOR DEVUGGING
         var idUserNameStr = localStorage.getItem("idUserName");
         if (idUserNameStr !== null) {
-            alert('Already logged in');
+            this.enterPhoneBook();
         }
+    },
+    
+    enterPhoneBook: function() {
+        window.location.href = './phones/phones.jsp'; //TODO !!!
     },
     
     ////////////////////////////////////////////////////
@@ -68,11 +66,10 @@ var index_main = {
                 }
                 
                 var idUserNameStr = json.idUserName.toString();
-                localStorage.setItem("idUserName", idUserNameStr);
+                window.localStorage.setItem("idUserName", idUserNameStr);
                 
                 modalSupport_main.setComponentAccessibility(true);
-                //window.location.href = '../index.jsp'; //TODO !!!
-                alert('Logging is successfull');
+                index_main.enterPhoneBook();
             } else {
                 var errorMessage = 'Error on server (' + index_main.http.status + ')';
                 index_main.setRowError(errorMessage);

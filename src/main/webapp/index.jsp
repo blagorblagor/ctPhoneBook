@@ -1,9 +1,3 @@
-<%-- 
-    Document   : index
-    Created on : Sep 7, 2020, 9:01:02 PM
-    Author     : goran
---%>
-
 <%@page import="rs.co.ct.ctPhoneBook.accessories.PseudoVersion"%>
 <%
     response.setHeader("Pragma", "no-cache");

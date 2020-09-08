@@ -1,8 +1,3 @@
-/* 
-    Created on : Aug 29, 2019, 8:10:48 PM
-    Author     : goran
-*/
-
 /* global ajaxSupport_main, modalSupport_main */
 
 var newAccount_main = {
