@@ -42,7 +42,7 @@ input {
 
 .rowLeft {
     display: inline-block;
-    width: calc(50% - 165px);
+    width: calc(50% - 100px);
     text-align: right;
 }
 
@@ -52,7 +52,7 @@ input {
     text-align: left;
 }
 
-.dugmeLogovanje {
+.buttonCreate {
     width: 240px;
     font-size: 18px;
     height: 32px;

@@ -15,7 +15,7 @@
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
             <param-name>jersey.config.server.provider.packages</param-name>
-            <param-value>com.spinspire.restexample</param-value>
+            <param-value>rs.co.ct.ctPhoneBook</param-value>
         </init-param>
     </servlet>
     

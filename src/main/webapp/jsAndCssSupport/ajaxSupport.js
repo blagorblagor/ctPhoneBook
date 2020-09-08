@@ -7,7 +7,7 @@
 
 var ajaxSupport_main = { 
     
-    siteRoot: '/ctPhoneBook', //Musr be the same as that one in context.xml
+    siteRoot: '/ctPhoneBook', //Must be the same as that one in context.xml
     
     httpTimeout: 30000, // 30 sec.
     

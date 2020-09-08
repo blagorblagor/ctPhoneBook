@@ -41,19 +41,19 @@
             Login
         </div>
         <div id='idUserRow' class='row'>
-            <div id='idKorisnikLabela' class='rowLeft'>
+            <div id='idUserNameLabel' class='rowLeft'>
                 Username:
             </div>
-            <div id='idUserName' class='rowRight' oninput='javascript:index_main.changeUsername()'>
-                <input id='idKorisnickoIme' class='inputGeneral' type="text" autocomplete='off' />
+            <div id='idUserNameRow' class='rowRight' oninput='javascript:index_main.changeUsername()'>
+                <input id='idUserName' class='inputGeneral' type="text" autocomplete='off' />
             </div>
         </div>
         <div id='idPasswordRow'  class='row'>
-            <div id='idSifraLabela' class='rowLeft'>
+            <div id='idPasswordLabel' class='rowLeft'>
                 Password:
             </div>
-            <div id='idPassword' class='rowRight' oninput='javascript:index_main.changePassword()'>
-                <input id='idSifra' class='inputOpstiUnos' type="password" autocomplete='off' />
+            <div id='idPasswordDiv' class='rowRight' oninput='javascript:index_main.changePassword()'>
+                <input id='idPassword' class='inputOpstiUnos' type="password" autocomplete='off' />
             </div>
         </div>
         <div id='idButtonLoginRow' class='row'>
@@ -74,7 +74,13 @@
                 </button>
             </div>
         </div>
-        <div id='idRowError' class='rowError'>
+        <div id='idError' class='row'>
+            <div id='idErrorLeft' class='rowLeft'>
+            </div>
+            <div id='idErrorDiv' class='rowRight'>
+                <div id='idRowError' class='rowError'>
+                </div> 
+            </div> 
         </div>        
     </body>
     
