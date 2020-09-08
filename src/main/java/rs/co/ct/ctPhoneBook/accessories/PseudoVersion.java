@@ -14,7 +14,7 @@ public class PseudoVersion {
     private static PseudoVersion pseudoVersion = null;
     
     private PseudoVersion() {
-        this.pseudoVersionJsCss = "?version=4"; //Increment pseudoversion number when changes on GUI are done
+        this.pseudoVersionJsCss = "?version=8"; //Increment pseudoversion number when changes on GUI are done
     }
     
     private final String pseudoVersionJsCss;

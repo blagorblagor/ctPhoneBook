@@ -33,7 +33,7 @@
         
     </head>
     
-    <body>
+    <body onload='javascript:index_main.pageOnLoad()'>
         <div id='idCompanyNam' class='title companyTitle'>
             CT Phone Book
         </div>

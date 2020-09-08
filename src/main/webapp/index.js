@@ -13,6 +13,16 @@ var index_main = {
     
     ////////////////////////////////////////////////////
     
+    pageOnLoad: function() {
+        //localStorage.removeItem("idUserName"); //FOR DEVUGGING
+        var idUserNameStr = localStorage.getItem("idUserName");
+        if (idUserNameStr !== null) {
+            alert('Already logged in');
+        }
+    },
+    
+    ////////////////////////////////////////////////////
+    
     clickLogin: function() {
         modalSupport_main.setComponentAccessibility(false);
         this.errorDiv = window.document.getElementById('idRowError');
@@ -56,6 +66,9 @@ var index_main = {
                     modalSupport_main.setComponentAccessibility(true);
                     return;
                 }
+                
+                var idUserNameStr = json.idUserName.toString();
+                localStorage.setItem("idUserName", idUserNameStr);
                 
                 modalSupport_main.setComponentAccessibility(true);
                 //window.location.href = '../index.jsp'; //TODO !!!

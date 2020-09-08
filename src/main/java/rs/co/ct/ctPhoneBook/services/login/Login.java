@@ -53,7 +53,7 @@ public class Login {
                 String password = (String)jsonEntry.get("passwordObj");
                 
                 String query = "SELECT ";
-                query += "COUNT(*) AS numberOfExistingAccounts";
+                query += "id_accounts";
                 query += " FROM ";
                 query += "accounts ";
                 query += " WHERE ";
@@ -65,18 +65,40 @@ public class Login {
                 stmt.setString(1, username.toLowerCase()); 
                 stmt.setString(2, password); 
                 ResultSet rs = stmt.executeQuery(); 
-                rs.next();
                 
-                boolean couldEnterAccountIntoDB = false;
+                /*System.out.println("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK 0");
+                //rs.last();
+                rs.first();
+                System.out.println("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK 1");
+                int numberOfRows = rs.getRow();
+                System.out.println("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK 2");
+                System.out.println(numberOfRows);
+                rs.beforeFirst();
+                System.out.println("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");*/
+                
+                if (rs.next()) {
+                    int idUserName = rs.getInt("id_accounts");                    
+                    resultJSON.put("status", "Success");
+                    resultJSON.put("idUserName", idUserName);
+                } else {
+                    resultJSON.put("status", "AccountDoesNotExist"); 
+                    resultJSON.put("problemMessage", "Username or password, or both, are not valid.");
+                }
+
+                
+                
+                /*rs.next();
+                
                 int numberOfExistingAccounts = rs.getInt("numberOfExistingAccounts");
                 if (numberOfExistingAccounts > 0) {
                     resultJSON.put("status", "Success");
                 } else { 
                     resultJSON.put("status", "AccountDoesNotExist"); 
                     resultJSON.put("problemMessage", "Username or password, or both, are not valid.");
-                }
+                }*/
                 
             } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
                 resultJSON.put("status", "CannotReadFromDatabase"); 
                 resultJSON.put("problemMessage", "Fatal error. Problem with reading data from database");
             }
