@@ -38,9 +38,6 @@ CREATE TABLE IF NOT EXISTS phones
 	phone_number VARCHAR(25) NOT NULL
 );
 
-CREATE UNIQUE INDEX phones_idContact_PhoneNumber
-ON phones(id_contacts, phone_number);
-
 ALTER TABLE phones
 ADD CONSTRAINT phones_idContact_contacts_idContact
 FOREIGN KEY (id_contacts)
