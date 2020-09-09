@@ -1,7 +1,7 @@
 CREATE DATABASE phonebook
 ENCODING = UTF8;
 
--- *******************
+-- ********************
 
 CREATE TABLE IF NOT EXISTS accounts
 (
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS accounts
 CREATE UNIQUE INDEX accounts_user_name
 ON accounts(user_name);
 
--- *******************
+-- ********************
 
 CREATE TABLE IF NOT EXISTS contacts
 (
@@ -29,7 +29,7 @@ ADD CONSTRAINT contacts_idAcount_accounts_idAcount
 FOREIGN KEY (id_accounts)
 REFERENCES accounts(id_accounts);
 
--- *******************
+-- ********************
 
 CREATE TABLE IF NOT EXISTS phones
 (
