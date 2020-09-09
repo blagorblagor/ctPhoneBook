@@ -3,11 +3,15 @@ ENCODING = UTF8;
 
 -- ********************
 
+CREATE EXTENSION IF NOT EXISTS pgcrypto; -- pgcrypto module must be instaalled in database
+
+-- ********************
+
 CREATE TABLE IF NOT EXISTS accounts
 (
 	id_accounts SERIAL PRIMARY KEY,
 	user_name VARCHAR(50) NOT NULL,
-	user_password VARCHAR(50) NOT NULL
+	user_password BYTEA NOT NULL
 );
 
 CREATE UNIQUE INDEX accounts_user_name
