@@ -1,8 +1,3 @@
-/* 
-    Created on : Sep 05, 2019, 8:10:48 PM
-    Author     : goran
-*/
-
 /* global phonesGeometry_main, accessories_main, autocompleteList_main, ajaxSupport_main, phonesOverview_dataViewSlick, phonesOverview_gridSlick, modalSupport_main, phonesList_main */
 
 var phonesAddModify_main = {
@@ -26,12 +21,12 @@ var phonesAddModify_main = {
     
     vrstaPredmeta: null,
     vrstaPredmetaID: null,
-    epBroj: null,
-    brojPrijave: null,
-    registarskiBroj: null,
+    name: null, //////////////////////
+    nickname: null, ////////////////////
+    surname: null, ///////////////////////
     datumPodnosenja: null,
     datumPodnosenjaLocal: null,
-    nosilacPrava: null,
+    phone: null,  ///////////////////////
     nosilacPravaID: null,
     nosilacPravaNaziv: null,
     nosilacPravaPIB: null,
@@ -79,9 +74,9 @@ var phonesAddModify_main = {
             var predmetJSONoverview = {
                 id: predmetJSON.id,
                 brojPredmetaPotpun: predmetJSON.brojPredmetaPotpun,
-                epBroj: predmetJSON.epBroj,
-                registarskiBroj: predmetJSON.registarskiBroj,
-                brojPrijave: predmetJSON.brojPrijave,
+                name: predmetJSON.name, //////////////////////////////
+                surname: predmetJSON.surname,
+                nickname: predmetJSON.nickname,
                 datumPodnosenja: predmetJSON.datumPodnosenja,
                 nosilacPravaNaziv: predmetJSON.nosilacPravaNaziv,
                 zastupnikNaziv: predmetJSON.zastupnikNaziv,
@@ -112,35 +107,25 @@ var phonesAddModify_main = {
         var dataIsOK = this.dataControl();
         if (!dataIsOK) {
             accessories_main.showErrorsAddChangeInputs(this.elementsAll, this.elementsWidthError, this.elementsErrorAll, 
-                                                       'This field is mandatory', '&nbsp;');
+                                                       'This field is mandatory!', '&nbsp;');
             return;
         }
         
         if (this.mode === 'adding') {
-            this.addPredmetIntoDfatabase();
+            this.addPhoneIntoDatabase();
         } else if (this.mode === 'modifying') {
-            this.changePredmetInDatabase();
+            this.midifyPhoneInDatabase();
         }
     },
     
     clickCancelAddChange: function() {
-        var columns = phonesOverview_gridSlick.getColumns();
-        var sortColumns = phonesOverview_gridSlick.getSortColumns();
+        window.document.getElementById('idNameInput').value = '';
+        window.document.getElementById('idNicknameInput').value = '';
+        window.document.getElementById('idSurnameInput').value = '';
+        window.document.getElementById('idPhoneInput').value = '';
         
         window.document.getElementById('idPhonesAddModify').style.display = 'none';
-        accessories_main.clearInputsData();
-        
-        window.document.getElementById('idPredmetiPregled').style.display = 'inline-block';
-        phonesGeometry_main.setPregledGeometry('idPhonesDivButtonsAddModify', 'idPredmetiDataTable'); 
-        
-        if (phonesList_main.indexGridSelected !== null) {
-            var indexSelected = phonesList_main.indexGridSelected;
-            phonesOverview_gridSlick.resetActiveCell();
-            phonesOverview_gridSlick.setSelectedRows([indexSelected]);
-            phonesOverview_gridSlick.scrollRowIntoView(indexSelected, true);
-        }
-        phonesOverview_gridSlick.setColumns(columns);
-        phonesOverview_gridSlick.setSortColumns(sortColumns);
+        window.document.getElementById('idContactsOverview').style.display = 'inline-block';
     },
     
     dateLostFocus: function(elementDateInput) {
@@ -171,21 +156,21 @@ var phonesAddModify_main = {
     dataControl: function() {
         this.elementsWidthError = [];
         
-        var elementPredmetEpBroj = window.document.getElementById('idNameInput');
-        this.epBroj = elementPredmetEpBroj.value;
-        if (this.epBroj.length === 0) {
+        var elementName = window.document.getElementById('idNameInput');
+        this.name = elementName.value;
+        if (this.name.length === 0) {
             this.elementsWidthError.push('idNameInput');
         }
         
-        var elementPredmetBrojPrijave = window.document.getElementById('idNicknameInput');
-        this.brojPrijave = elementPredmetBrojPrijave.value;
+        var elementNickname = window.document.getElementById('idNicknameInput');
+        this.nickname = elementNickname.value;
         
-        var elementPredmetRegistarskiBroj = window.document.getElementById('idSurnameInput');
-        this.registarskiBroj = elementPredmetRegistarskiBroj.value;
+        var elementSurname = window.document.getElementById('idSurnameInput');
+        this.surname = elementSurname.value;
         
-        var elementPredmetNosilacPrava = window.document.getElementById('idPhoneInput');
-        this.nosilacPrava = elementPredmetNosilacPrava.value;
-        if (this.nosilacPrava.length === 0) {
+        var elementPhone = window.document.getElementById('idPhoneInput');
+        this.phone = elementPhone.value;
+        if (this.phone.length === 0) {
             this.elementsWidthError.push('idPhoneInput');
         }
         
@@ -197,250 +182,120 @@ var phonesAddModify_main = {
     
     //////////////////////////////////////
     
-    addPredmetIntoDatabase: function() {
+    addPhoneIntoDatabase: function() {
         modalSupport_main.setComponentAccessibility(false);
         
-        var token = window.localStorage.getItem("token");
-        
+        var idAccount = parseInt(window.localStorage.getItem("idAccount"));
         var obj = {
-            'token': token,
-            'vrstaPredmetaStr': this.vrstaPredmeta,
-            'idVrstaPredmeta': this.vrstaPredmetaID,
-            'epBroj': this.epBroj,
-            'brojPrijave': this.brojPrijave,
-            'registarskiBroj': this.registarskiBroj,
-            'datumPodnosenja': this.datumPodnosenja,
-            'nosilacPrava': this.nosilacPravaID,
-            'zastupa': this.zastupaID,
-            'primalacRacuna': this.racunDobijaID,
-            'datumIsteka': this.datumIsteka,
-            'datumVaziDo': this.datumVaziDo,
-            'datumPlacanja': this.datumPlacanja
+            'idAccountObj': idAccount,
+            'nameObj': this.name,
+            'nicknameObj': this.nickname,
+            'surnameObj': this.surname,
+            'phoneObj': this.phone
         };
         
         this.http = ajaxSupport_main.createHTTP();
         
-        this.http.onload = this.predmetAddOnLoad;        
-        this.http.onerror = this.predmetAddOnError;        
-        this.http.ontimeout = this.predmetAddOnTimeout;
+        this.http.onload = this.phoneAddOnLoad;        
+        this.http.onerror = this.phoneAddOnError;        
+        this.http.ontimeout = this.phoneAddOnTimeout;
 
-        this.http.open('POST', ajaxSupport_main.siteRoot + '/api/services/predmeti/add', true);
+        this.http.open('POST', ajaxSupport_main.siteRoot + '/api/services/phones/add', true);
         this.http.setRequestHeader('Content-type', 'application/json; charset=UTF-8');
         this.http.timeout = ajaxSupport_main.httpTimeout;
         this.http.send(JSON.stringify(obj));
-        
-        return true;
     },
     
-    predmetAddOnLoad: function() {
+    phoneAddOnLoad: function() {
         if (phonesAddModify_main.http.readyState === 4) {
             if (phonesAddModify_main.http.status === 200) {
                 var json = JSON.parse(phonesAddModify_main.http.responseText);
-                errorResponse = ajaxSupport_main.ajaxCallbackError(json, '../index.jsp');
-                if (errorResponse) {
-                    modalSupport_main.setComponentAccessibility(true); 
+                if (json.status !== "Success") { 
+                    window.alert(json.problemMessage);
+                    modalSupport_main.setComponentAccessibility(true);
                     return;
-                }
+                }                
                 
-                var idInserted = json.ID_INSERTED;
-                var brojPredmeta = json.BROJ_PREDMETA;
-                var idUser = json.ID_USER;
-                var brojPredmetaPotpunVracen = json.BROJ_PREDMETA_POTPUN;
-                
-                var objAdded = {
-                    id: idInserted,
-                    idVrstePredmeta: phonesAddModify_main.vrstaPredmetaID,
-                    nazivVrstePredmeta: phonesAddModify_main.vrstaPredmeta,
-                    brojPredmeta: brojPredmeta,
-                    brojPredmetaPotpun: phonesAddModify_main.brojPredmetaPotpun,
-                    epBroj: phonesAddModify_main.epBroj,
-                    registarskiBroj: phonesAddModify_main.registarskiBroj,
-                    brojPrijave: phonesAddModify_main.brojPrijave,
-                    idDrzava: 0, // not in use
-                    nazivDrzava: '', // not in use
-                    datumPodnosenja: phonesAddModify_main.datumPodnosenjaLocal,
-                    datumPodnosenjaISO: phonesAddModify_main.datumPodnosenja,
-                    idNosilacPrava: phonesAddModify_main.nosilacPravaID,
-                    nosilacPravaNaziv: phonesAddModify_main.nosilacPravaNaziv,
-                    nosilacPravaPIB: phonesAddModify_main.nosilacPravaPIB,
-                    idZastupnik: phonesAddModify_main.zastupaID,
-                    zastupnikNaziv: phonesAddModify_main.zastupaNaziv,
-                    zastupnikPIB: phonesAddModify_main.zastupaPIB,
-                    idPrimalacRacuna: phonesAddModify_main.racunDobijaID,
-                    primalacRacunaNaziv: phonesAddModify_main.racunDobijaNaziv,
-                    primalacRacunaPIB: phonesAddModify_main.racunDobijaPIB,
-                    datumIsteka: phonesAddModify_main.datumIstekaLocal,
-                    datumIstekaISO: phonesAddModify_main.datumIsteka,
-                    datumVaziDo: phonesAddModify_main.datumVaziDoLocal,
-                    datumVaziDoISO: phonesAddModify_main.datumVaziDo,
-                    datumPlacanja: phonesAddModify_main.datumPlacanjaLocal,
-                    datumPlacanjaISO: phonesAddModify_main.datumPlacanja,
-                    idKorisnici: idUser
-                };
-                phonesAddModify_main.predmetiLista.push(objAdded);
-                
-                var objAddedForGrid = {
-                    id: idInserted,
-                    brojPredmetaPotpun: brojPredmetaPotpunVracen,
-                    epBroj: objAdded.epBroj,
-                    registarskiBroj: objAdded.registarskiBroj,
-                    brojPrijave: objAdded.brojPrijave,
-                    datumPodnosenja: objAdded.datumPodnosenja,
-                    nosilacPravaNaziv: objAdded.nosilacPravaNaziv,
-                    zastupnikNaziv: objAdded.zastupnikNaziv,
-                    primalacRacunaNaziv: objAdded.primalacRacunaNaziv,
-                    datumIsteka: objAdded.datumIsteka,
-                    datumVaziDo: objAdded.datumVaziDo,
-                    datumPlacanja: objAdded.datumPlacanja
-                };
-                
-                var successMessage = 'U S P E H:\r\n';
-                successMessage += json.AddedItem;                
-                window.alert(successMessage);
-                
-                modalSupport_main.setComponentAccessibility(true);
-                
-                phonesOverview_dataViewSlick.addItem(objAddedForGrid);
-                
-                phonesOverview_dataViewSlick.reSort();
-                phonesList_main.indexGridSelected = phonesOverview_dataViewSlick.getRowById(idInserted);
-                
-                phonesAddModify_main.clickCancelAddChange();
+                window.location.reload();
             } else {
                 modalSupport_main.setComponentAccessibility(true);
-                var errorMessage = 'G R E Š K A:\r\nGreška na serveru (' + phonesAddModify_main.http.status + ')';
+                var errorMessage = 'E R R O R\r\nError on server (' + phonesAddModify_main.http.status + ')';
                 window.alert(errorMessage);
             }
         }
     },
     
-    predmetAddOnError: function() {
+    phoneAddOnError: function() {
         modalSupport_main.setComponentAccessibility(true);
-        var errorMessage = 'G R E Š K A:\r\nNeočekivana greška na serveru.';
+        var errorMessage = 'E R R O R\r\nUnexpected error on server.';
         window.alert(errorMessage);
     },
     
-    predmetAddOnTimeout: function() {
+    phoneAddOnTimeout: function() {
         modalSupport_main.setComponentAccessibility(true);
-        var errorMessage = 'G R E Š K A:\r\nPrekoračen tajmaut.';
+        var errorMessage = 'E R R O R\r\nTimeout is over.';
         window.alert(errorMessage);
     },  
     
     //////////////////////////////////////
     
-    changePredmetInDatabase: function() {
+    midifyPhoneInDatabase: function() {
         modalSupport_main.setComponentAccessibility(false);
         
-        var token = window.localStorage.getItem("token");
+        var name =  window.document.getElementById('idNameInput').value;
+        var nickname = window.document.getElementById('idNicknameInput').value;
+        var surname = window.document.getElementById('idSurnameInput').value;
+        var phone = window.document.getElementById('idPhoneInput').value;
         
         var obj = {
-            'token': token,
-            'id': phonesAddModify_main.predmetJSON.id,
-            'brojPredmeta': phonesAddModify_main.predmetJSON.brojPredmeta,
-            'vrstaPredmetaStr': this.vrstaPredmeta,
-            'idVrstaPredmeta': this.vrstaPredmetaID,
-            'epBroj': this.epBroj,
-            'brojPrijave': this.brojPrijave,
-            'registarskiBroj': this.registarskiBroj,
-            'datumPodnosenja': this.datumPodnosenja,
-            'nosilacPrava': this.nosilacPravaID,
-            'zastupa': this.zastupaID,
-            'primalacRacuna': this.racunDobijaID,
-            'datumIsteka': this.datumIsteka,
-            'datumVaziDo': this.datumVaziDo,
-            'datumPlacanja': this.datumPlacanja
+            'idContactObj': phonesList_main.selectedContactRowJSON.id,
+            'idPhoneObj': phonesList_main.selectedContactRowJSON.id_phones,
+            'nameObj': name,
+            'nicknameObj': nickname,
+            'surnameObj': surname,
+            'phoneObj': phone
         };
         
         this.http = ajaxSupport_main.createHTTP();
         
-        this.http.onload = this.predmetChangeOnLoad;        
-        this.http.onerror = this.predmetChangeOnError;        
-        this.http.ontimeout = this.predmetChangeOnTimeout;
+        this.http.onload = this.phoneModifyOnLoad;        
+        this.http.onerror = this.phoneModifyOnError;        
+        this.http.ontimeout = this.phoneModifyOnTimeout;
 
-        this.http.open('POST', ajaxSupport_main.siteRoot + '/api/services/predmeti/modify', true);
+        this.http.open('POST', ajaxSupport_main.siteRoot + '/api/services/phones/modify', true);
         this.http.setRequestHeader('Content-type', 'application/json; charset=UTF-8');
         this.http.timeout = ajaxSupport_main.httpTimeout;
         this.http.send(JSON.stringify(obj));
-        
-        return true;
     },
     
-    predmetChangeOnLoad: function() {
+    phoneModifyOnLoad: function() {
         if (phonesAddModify_main.http.readyState === 4) {
             if (phonesAddModify_main.http.status === 200) {
                 var json = JSON.parse(phonesAddModify_main.http.responseText);
-                
-                errorResponse = ajaxSupport_main.ajaxCallbackError(json, '../index.jsp');
-                if (errorResponse) {
-                    modalSupport_main.setComponentAccessibility(true); 
+                if (json.status !== "Success") { 
+                    window.alert(json.problemMessage);
+                    modalSupport_main.setComponentAccessibility(true);
                     return;
-                }
+                }                
                 
-                var idUser = json.ID_USER;
-                
-                phonesAddModify_main.predmetJSON.epBroj = phonesAddModify_main.epBroj;
-                phonesAddModify_main.predmetJSON.registarskiBroj = phonesAddModify_main.registarskiBroj;
-                phonesAddModify_main.predmetJSON.brojPrijave = phonesAddModify_main.brojPrijave;
-                phonesAddModify_main.predmetJSON.idDrzava = 0; // not in use
-                phonesAddModify_main.predmetJSON.nazivDrzava = '', // not in use
-                phonesAddModify_main.predmetJSON.datumPodnosenja = phonesAddModify_main.datumPodnosenjaLocal;
-                phonesAddModify_main.predmetJSON.datumPodnosenjaISO = phonesAddModify_main.datumPodnosenja;
-                phonesAddModify_main.predmetJSON.idNosilacPrava = phonesAddModify_main.nosilacPravaID;
-                phonesAddModify_main.predmetJSON.nosilacPravaNaziv = phonesAddModify_main.nosilacPravaNaziv;
-                phonesAddModify_main.predmetJSON.nosilacPravaPIB = phonesAddModify_main.nosilacPravaPIB;
-                phonesAddModify_main.predmetJSON.idZastupnik = phonesAddModify_main.zastupaID;
-                phonesAddModify_main.predmetJSON.zastupnikNaziv = phonesAddModify_main.zastupaNaziv;
-                phonesAddModify_main.predmetJSON.zastupnikPIB = phonesAddModify_main.zastupaPIB;
-                phonesAddModify_main.predmetJSON.idPrimalacRacuna = phonesAddModify_main.racunDobijaID;
-                phonesAddModify_main.predmetJSON.primalacRacunaNaziv = phonesAddModify_main.racunDobijaNaziv;
-                phonesAddModify_main.predmetJSON.primalacRacunaPIB = phonesAddModify_main.racunDobijaPIB;
-                phonesAddModify_main.predmetJSON.datumIsteka = phonesAddModify_main.datumIstekaLocal;
-                phonesAddModify_main.predmetJSON.datumIstekaISO = phonesAddModify_main.datumIsteka;
-                phonesAddModify_main.predmetJSON.datumVaziDo = phonesAddModify_main.datumVaziDoLocal;
-                phonesAddModify_main.predmetJSON.datumVaziDoISO = phonesAddModify_main.datumVaziDo;
-                phonesAddModify_main.predmetJSON.datumPlacanja = phonesAddModify_main.datumPlacanjaLocal;
-                phonesAddModify_main.predmetJSON.datumPlacanjaISO = phonesAddModify_main.datumPlacanja;
-                phonesAddModify_main.predmetJSON.idKorisnici = idUser;
-                
-                phonesAddModify_main.rowSelectedJSON.epBroj = phonesAddModify_main.predmetJSON.epBroj;
-                phonesAddModify_main.rowSelectedJSON.registarskiBroj = phonesAddModify_main.predmetJSON.registarskiBroj;
-                phonesAddModify_main.rowSelectedJSON.brojPrijave = phonesAddModify_main.predmetJSON.brojPrijave;
-                phonesAddModify_main.rowSelectedJSON.datumPodnosenja = phonesAddModify_main.predmetJSON.datumPodnosenja;
-                phonesAddModify_main.rowSelectedJSON.nosilacPravaNaziv = phonesAddModify_main.predmetJSON.nosilacPravaNaziv;
-                phonesAddModify_main.rowSelectedJSON.zastupnikNaziv = phonesAddModify_main.predmetJSON.zastupnikNaziv;
-                phonesAddModify_main.rowSelectedJSON.primalacRacunaNaziv = phonesAddModify_main.predmetJSON.primalacRacunaNaziv;
-                phonesAddModify_main.rowSelectedJSON.datumIsteka = phonesAddModify_main.predmetJSON.datumIsteka;
-                phonesAddModify_main.rowSelectedJSON.datumVaziDo = phonesAddModify_main.predmetJSON.datumVaziDo;
-                phonesAddModify_main.rowSelectedJSON.datumPlacanja = phonesAddModify_main.predmetJSON.datumPlacanja;
-                
-                var successMessage = 'U S P E H:\r\n';
-                successMessage += (json.ChangedItem + phonesAddModify_main.predmetJSON.brojPredmetaPotpun);                
-                window.alert(successMessage);
-                
-                modalSupport_main.setComponentAccessibility(true);
-                
-                var idDokument = phonesAddModify_main.rowSelectedJSON.id;
-                phonesOverview_dataViewSlick.reSort();
-                phonesList_main.indexGridSelected = phonesOverview_dataViewSlick.getRowById(idDokument);
-                
-                phonesAddModify_main.clickCancelAddChange();
+                window.location.reload();
             } else {
                 modalSupport_main.setComponentAccessibility(true);
-                var errorMessage = 'G R E Š K A:\r\nGreška na serveru (' + phonesAddModify_main.http.status + ')';
+                var errorMessage = 'E R R O R:\r\nError on server (' + phonesAddModify_main.http.status + ')';
                 window.alert(errorMessage);
             }
         }
     },
     
-    predmetChangeOnError: function() {
+    phoneModifyOnError: function() {
         modalSupport_main.setComponentAccessibility(true);
-        var errorMessage = 'G R E Š K A:\r\nNeočekivana greška na serveru.';
+        var errorMessage = 'E R R O R:\r\nUnexpected error on server.';
         window.alert(errorMessage);
     },
     
-    predmetChangeOnTimeout: function() {
+    phoneModifyOnTimeout: function() {
         modalSupport_main.setComponentAccessibility(true);
-        var errorMessage = 'G R E Š K A:\r\nPrekoračen tajmaut.';
+        var errorMessage = 'E R R O R:\r\nYimeout is over.';
         window.alert(errorMessage);
     }
     

@@ -1,26 +1,77 @@
-/* 
-    Created on : Sep 04, 2019, 8:10:48 PM
-    Author     : goran
-*/
-
 /* global phonesGeometry_main, phonesAddModify_main, phonesOverview_gridSlick, phonesOverview_dataViewSlick, modalSupport_main, ajaxSupport_main, accessories_main */
-
 
 var phonesList_main = {
     
     http: null,
     
     indexGridSelected: null,
+    selectedContactRowJSON: null,
     
     pageResize: function() {
-        if (window.document.getElementById('idPredmetiPregled').style.display !== 'none') {
-            phonesGeometry_main.setPregledGeometry('idPhonesDivButtonsAddModify', 'idPredmetiDataTable');
+        if (window.document.getElementById('idContactsOverview').style.display !== 'none') {
+            phonesGeometry_main.setContactGeometry('idPhonesDivButtonsAddModify', 'idContactsDataTable');
         } else if (window.document.getElementById('idPhonesAddModify').style.display !== 'none') {
-            phonesGeometry_main.setPregledGeometry('idPhonesDivButtonsAddModify', 'idPhonesFormAddChange');
+            phonesGeometry_main.setContactGeometry('idPhonesDivButtonsAddModify', 'idPhonesFormAddChange');
         }
     },
     
-    ////////////////////////////////
+    ////////////////////////////////////////////////////
+    
+    readContacts: function() {
+        modalSupport_main.setComponentAccessibility(false);
+        
+        var idAccount = parseInt(window.localStorage.getItem("idAccount"));
+        var obj = {
+            'idAccountObj': idAccount
+        };
+        
+        this.http = ajaxSupport_main.createHTTP();
+        
+        this.http.onload = this.readContactsOnLoad;        
+        this.http.onerror = this.readContactsOnError;        
+        this.http.ontimeout = this.readContactsOnTimeout;
+
+        this.http.open('POST', ajaxSupport_main.siteRoot + '/api/services/phones/read', true);
+        this.http.setRequestHeader('Content-type', 'application/json; charset=UTF-8');
+        this.http.timeout = ajaxSupport_main.httpTimeout;
+        this.http.send(JSON.stringify(obj));
+    },
+    
+    readContactsOnLoad: function() {
+        if (phonesList_main.http.readyState === 4) {
+            if (phonesList_main.http.status === 200) {
+                var json = JSON.parse(phonesList_main.http.responseText);
+                if (json.status !== "Success") {
+                    alert(json.problemMessage);                    
+                    modalSupport_main.setComponentAccessibility(true);
+                    return;
+                }
+                
+                phonesAddModify_main.predmetiListaOverview = json.contacts;                
+                phonesGeometry_main.setContactGeometry('idContactsDivButtonsOverview', 'idContactsDataTable');
+                
+                modalSupport_main.setComponentAccessibility(true);
+            } else {
+                var errorMessage = 'Error on server (' + phonesList_main.http.status + ')';
+                window.alert(errorMessage);
+                modalSupport_main.setComponentAccessibility(true);
+            }
+        }
+    },
+    
+    readContactsOnError: function() {
+        var errorMessage = 'Server is not found or it doeas not respond.';
+        window.alert(errorMessage);
+        modalSupport_main.setComponentAccessibility(true);
+    },
+    
+    readContactsOnTimeout: function() {
+        var errorMessage = 'Timeout is over.';
+        window.alert(errorMessage);
+        modalSupport_main.setComponentAccessibility(true);
+    },
+    
+    ////////////////////////////////////////////////////
     
     clickOnListAdd: function() {
         var selectedRows = phonesOverview_gridSlick.getSelectedRows();
@@ -32,41 +83,47 @@ var phonesList_main = {
         
         accessories_main.removeAllErrorLabelsAddChangeInputs(phonesAddModify_main.elementsErrorAll);
         
-        window.document.getElementById('idPredmetiPregled').style.display = 'none';
+        window.document.getElementById('idContactsOverview').style.display = 'none';
         
         phonesAddModify_main.mode = 'adding';
         window.document.getElementById('idPhonesAddChangeTitle').innerHTML = 'Add Contact';
         
-        phonesGeometry_main.setPregledGeometry('idPhonesDivButtonsAddModify', 'idPhonesFormAddChange');
+        phonesGeometry_main.setContactGeometry('idPhonesDivButtonsAddModify', 'idPhonesFormAddChange');
         window.document.getElementById('idPhonesAddModify').style.display = 'inline-block';
     },
     
-    clickOnPreglediModify: function() {
-        var indexAndJSONsArray = this.getPredmetJSON(1);
+    clickOnContactsModify: function() {
+        /*var indexAndJSONsArray = this.getPredmetJSON(1);
         if (indexAndJSONsArray.length === 0) {
             return;
+        }*/
+        
+        var selectedRows = phonesOverview_gridSlick.getSelectedRows();
+        if (selectedRows[0] === undefined) {
+            return;
         }
+        this.selectedContactRowJSON = phonesOverview_dataViewSlick.getItem([selectedRows[0]]);
         
         accessories_main.removeAllErrorLabelsAddChangeInputs(phonesAddModify_main.elementsErrorAll);
         
-        phonesAddModify_main.rowSelectedJSON = indexAndJSONsArray[0];
+        /*phonesAddModify_main.rowSelectedJSON = indexAndJSONsArray[0];
         phonesAddModify_main.predmetJSON = indexAndJSONsArray[1];
-        phonesAddModify_main.indexRowSelected = indexAndJSONsArray[2];
+        phonesAddModify_main.indexRowSelected = indexAndJSONsArray[2];*/
         
-        window.document.getElementById('idPredmetiPregled').style.display = 'none';
+        window.document.getElementById('idContactsOverview').style.display = 'none';
         
         phonesAddModify_main.mode = 'modifying';
-        window.document.getElementById('idPhonesAddChangeTitle').innerHTML = 'Izmena predmeta';
+        /*window.document.getElementById('idPhonesAddChangeTitle').innerHTML = 'Izmena predmeta';
         window.document.getElementById('idPredmetVrstaInput').disabled = true;
-        window.document.getElementById('idPredmetVrstaInput').style.color = 'grey';
+        window.document.getElementById('idPredmetVrstaInput').style.color = 'grey';*/
         
-        phonesGeometry_main.setPregledGeometry('idPhonesDivButtonsAddModify', 'idPhonesFormAddChange');
+        phonesGeometry_main.setContactGeometry('idPhonesDivButtonsAddModify', 'idPhonesFormAddChange');
         window.document.getElementById('idPhonesAddModify').style.display = 'inline-block';
         
         this.setModifyingData();
     },
     
-    clickOnPreglediRevoke: function() {
+    clickOnContactsDelete: function() {
         var question = 'P O T V R D A\r\n';
         question += 'Želite li zaista da uklonite\r\n';
         question += 'označeni predmet?';
@@ -118,7 +175,7 @@ var phonesList_main = {
     ////////////////
     
     //modifying - mode = 1, revoke - mode = 2, submodule documentation - mode = 3
-    getPredmetJSON: function(mode) {
+    /*getPredmetJSON: function(mode) {
         var indexAndJSONsArray = [];
         
         var selectedRows = phonesOverview_gridSlick.getSelectedRows();
@@ -151,28 +208,13 @@ var phonesList_main = {
         }
         
         return indexAndJSONsArray;
-    },
+    },*/
     
     setModifyingData: function() {
-        window.document.getElementById('idPredmetVrstaInput').value = phonesAddModify_main.predmetJSON.nazivVrstePredmeta;
-        window.document.getElementById('idPredmetBrojInput').value = phonesAddModify_main.predmetJSON.brojPredmeta;
-        
-        window.document.getElementById('idPredmetEpBrojInput').value = phonesAddModify_main.predmetJSON.epBroj;
-        window.document.getElementById('idPredmetBrojPrijaveInput').value = phonesAddModify_main.predmetJSON.brojPrijave;
-        window.document.getElementById('idPredmetRegistarskiBrojInput').value = phonesAddModify_main.predmetJSON.registarskiBroj;
-        
-        window.document.getElementById('idPredmetDatumPodnosenjaInput').value = phonesAddModify_main.predmetJSON.datumPodnosenjaISO;
-        window.document.getElementById('idPredmetDatumIstekaInput').value = phonesAddModify_main.predmetJSON.datumIstekaISO;
-        window.document.getElementById('idPredmetDatumVaziDoInput').value = phonesAddModify_main.predmetJSON.datumVaziDoISO;
-        window.document.getElementById('idDatumPlacanjaInput').value = phonesAddModify_main.predmetJSON.datumPlacanjaISO;
-        
-        nosilacPravaACL = phonesAddModify_main.predmetJSON.nosilacPravaNaziv + " " + phonesAddModify_main.predmetJSON.nosilacPravaPIB;
-        zastupnikACL = phonesAddModify_main.predmetJSON.zastupnikNaziv + " " + phonesAddModify_main.predmetJSON.zastupnikPIB;
-        primalacRacunaACL = phonesAddModify_main.predmetJSON.primalacRacunaNaziv + " " + phonesAddModify_main.predmetJSON.primalacRacunaPIB;
-        
-        window.document.getElementById('idPredmetNosilacPravaInput').value = nosilacPravaACL;
-        window.document.getElementById('idPredmetZastupnikInput').value = zastupnikACL;
-        window.document.getElementById('idPredmetRacunDobijaInput').value = primalacRacunaACL;
+        window.document.getElementById('idNameInput').value = this.selectedContactRowJSON.name;
+        window.document.getElementById('idNicknameInput').value = this.selectedContactRowJSON.nickname;
+        window.document.getElementById('idSurnameInput').value = this.selectedContactRowJSON.surname;
+        window.document.getElementById('idPhoneInput').value = this.selectedContactRowJSON.phone_number;
     },  
     
     //////////////////////////////////////

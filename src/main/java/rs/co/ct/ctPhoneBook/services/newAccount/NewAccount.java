@@ -17,6 +17,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.apache.commons.dbutils.DbUtils;
 import org.json.JSONObject;
 import rs.co.ct.ctPhoneBook.accessories.DBAccessories;
 
@@ -48,6 +49,8 @@ public class NewAccount {
         DBAccessories dBAccessories = new DBAccessories();
         Connection conn = dBAccessories.getConnection();
         String secretKey = dBAccessories.getSecretKey();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         if (conn != null) {
             try {
                 JSONObject jsonEntry = new JSONObject(jsonEntryStr);
@@ -61,9 +64,9 @@ public class NewAccount {
                 query += " WHERE ";
                 query += "lower(user_name) = ?";
 
-                PreparedStatement stmt = conn.prepareStatement(query);
+                stmt = conn.prepareStatement(query);
                 stmt.setString(1, username.toLowerCase()); 
-                ResultSet rs = stmt.executeQuery(); 
+                rs = stmt.executeQuery(); 
                 rs.next();
                 
                 boolean couldEnterAccountIntoDB = false;
@@ -91,8 +94,8 @@ public class NewAccount {
                     if (numberOfAddedAcounts == 1) {
                         resultJSON.put("status", "Success"); 
                     } else {
-                        resultJSON.put("status", "CannotConnectToDatabase"); 
-                        resultJSON.put("problemMessage", "Fatal error. Cannot add this account onto database");
+                        resultJSON.put("status", "CannotAddIntoToDatabase"); 
+                        resultJSON.put("problemMessage", "Fatal error. Cannot add this account into database");
                     }
                 }
                 
@@ -103,6 +106,16 @@ public class NewAccount {
         } else {
             resultJSON.put("status", "CannotConnectToDatabase"); 
             resultJSON.put("problemMessage", "Fatal error. Problem with connecting to database");
+        }
+        
+        if (conn != null) {
+            DbUtils.closeQuietly(conn);
+        }
+        if (stmt != null) {
+            DbUtils.closeQuietly(stmt);
+        }
+        if (rs != null) {
+            DbUtils.closeQuietly(rs);
         }
         
         String returnJSONStr = resultJSON.toString();        
