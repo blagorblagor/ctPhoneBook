@@ -1,8 +1,3 @@
-/* 
-    Created on : Sep 11, 2019, 10:02:15 AM
-    Author     : goran
-*/
-
 /* global Slick, slickGridSupport_main */
 
 phonesOverview_dataViewSlick = null;
@@ -10,12 +5,11 @@ phonesOverview_gridSlick = null;
 
 var phonesOverview_main = {
     
-    //gridWidth: 1425,
     gridWidth: 600,
     gridMinHeight: 400,
     
-    createAndPopulateGrid: function(idPredmetiDataTable, predmetiOverview) {
-        var elementDataTable = window.document.getElementById(idPredmetiDataTable);
+    createAndPopulateGrid: function(idContactsDataTable, predmetiOverview) {
+        var elementDataTable = window.document.getElementById(idContactsDataTable);
         var data = predmetiOverview;
         
         var options = {
@@ -29,22 +23,15 @@ var phonesOverview_main = {
             multiSelect: false
         };
         
-        var invisibleIdColumnDefContactID = {id: "id_contacts", name: "", field: "id_contacts", width: 0, minWidth: 0, maxWidth: 0, sortable: true, hidden: true, cssClass: "invisibleColumn", headerCssClass: "invisibleColumn"};
+        var invisibleIdColumnDefContactID = {id: "id", name: "", field: "id", width: 0, minWidth: 0, maxWidth: 0, sortable: true, hidden: true, cssClass: "invisibleColumn", headerCssClass: "invisibleColumn"};
         var invisibleIdColumnDefPhoneID = {id: "id_phones", name: "", field: "id_phones", width: 0, minWidth: 0, maxWidth: 0, sortable: true, hidden: true, cssClass: "invisibleColumn", headerCssClass: "invisibleColumn"};
         var columns = [
             invisibleIdColumnDefContactID,
             invisibleIdColumnDefPhoneID,
-            //{id: "brojPredmetaPotpun", name: "Predmet", field: "brojPredmetaPotpun", width: 104, sortable: true, cssClass: "cellGridTextRightAllignment", headerCssClass: "headerCellGridTextRightAllignment"},
             {id: "name", name: "Name", field: "name", width: 140, sortable: true, cssClass: "cellGridTextLeftAllignment", headerCssClass: "headerCellGridTextLeftAllignment"},
             {id: "nickname", name: "Nickname", field: "nickname", width: 140, sortable: true, cssClass: "cellGridTextLeftAllignment", headerCssClass: "headerCellGridTextLeftAllignment"},
             {id: "surname", name: "Surname", field: "surname", width: 140, sortable: true, cssClass: "cellGridTextLeftAllignment", headerCssClass: "headerCellGridTextLeftAllignment"},
-            //{id: "datumPodnosenja", name: "Datum podnošenja", field: "datumPodnosenja", width: 135, sortable: true, cssClass: "cellGridTextRightAllignment", headerCssClass: "headerCellGridTextRightAllignment"},
-            {id: "phone", name: "Phone", field: "phone", width: 162, sortable: true, cssClass: "cellGridTextLeftAllignment", headerCssClass: "headerCellGridTextLeftAllignment"}
-            //{id: "zastupnikNaziv", name: "Zastupnik", field: "zastupnikNaziv", width: 162, sortable: true, cssClass: "cellGridTextLeftAllignment", headerCssClass: "headerCellGridTextLeftAllignment"},
-            //{id: "primalacRacunaNaziv", name: "Račun dobija", field: "primalacRacunaNaziv", width: 162, sortable: true, cssClass: "cellGridTextLeftAllignment", headerCssClass: "headerCellGridTextLeftAllignment"},
-            //{id: "datumIsteka", name: "Pravo ističe", field: "datumIsteka", width: 90, sortable: true, cssClass: "cellGridTextRightAllignment", headerCssClass: "headerCellGridTextRightAllignment"},
-            //{id: "datumVaziDo", name: "Važi do", field: "datumVaziDo", width: 90, sortable: true, cssClass: "cellGridTextRightAllignment", headerCssClass: "headerCellGridTextRightAllignment"},
-            //{id: "datumPlacanja", name: "Taksu platiti do", field: "datumPlacanja", width: 110, sortable: true, cssClass: "cellGridTextRightAllignment", headerCssClass: "headerCellGridTextRightAllignment"}
+            {id: "phone_number", name: "Phone", field: "phone_number", width: 162, sortable: true, cssClass: "cellGridTextLeftAllignment", headerCssClass: "headerCellGridTextLeftAllignment"}
         ];
         
         var columnFilters = {};
@@ -108,19 +95,16 @@ var phonesOverview_main = {
         });
         
         phonesOverview_gridSlick.onSelectedRowsChanged.subscribe(function(e,args){
-            var elementDugmeIzmenaPregledi = window.document.getElementById('idDugmeIzmenaPregledi');
-            var elementDugmeUklanjanjePregledi = window.document.getElementById('idDugmeUklanjanjePregledi');
-            //var elementDugmeDokumentacijaPregledi = window.document.getElementById('idDugmeDokumentacijaPregledi');
+            var elementButtonModifyOverview = window.document.getElementById('idButtonModifyOverview');
+            var elementDeleteOverview = window.document.getElementById('idButtonDeleteOverview');
             
             var selectedRows = phonesOverview_gridSlick.getSelectedRows();
             if (selectedRows[0] !== undefined) {
-                elementDugmeIzmenaPregledi.disabled = false;
-                elementDugmeUklanjanjePregledi.disabled = false;
-                //elementDugmeDokumentacijaPregledi.disabled = false;
+                elementButtonModifyOverview.disabled = false;
+                elementDeleteOverview.disabled = false;
             } else {
-                elementDugmeIzmenaPregledi.disabled = true;
-                elementDugmeUklanjanjePregledi.disabled = true;
-                //elementDugmeDokumentacijaPregledi.disabled = true;
+                elementButtonModifyOverview.disabled = true;
+                elementDeleteOverview.disabled = true;
             }
         });
 	 
@@ -129,29 +113,15 @@ var phonesOverview_main = {
             var columnID = args.sortCols[0].sortCol.id;
             
             var comparer = function(dataRow1, dataRow2) {
-                /*if (columnID === 'brojPredmetaPotpun') {
-                    return slickGridSupport_main.predmetCustomComparer(dataRow1, dataRow2, cols);
-                } else*/ if (columnID === 'epBroj') {
+                if (columnID === 'name') {
                     return slickGridSupport_main.stringComparer(dataRow1, dataRow2, cols);
-                } else if (columnID === 'brojPrijave') {
+                } else if (columnID === 'nickname') {
                     return slickGridSupport_main.stringComparer(dataRow1, dataRow2, cols);
-                } else if (columnID === 'registarskiBroj') {
+                } else if (columnID === 'surname') {
                     return slickGridSupport_main.stringComparer(dataRow1, dataRow2, cols);
-                } /*else if (columnID === 'datumPodnosenja') {
-                    return slickGridSupport_main.dateComparer(dataRow1, dataRow2, cols);
-                }*/ else if (columnID === 'nosilacPravaNaziv') {
+                } else if (columnID === 'phone_number') {
                     return slickGridSupport_main.stringComparer(dataRow1, dataRow2, cols);
-                }/* else if (columnID === 'zastupnikNaziv') {
-                    return slickGridSupport_main.stringComparer(dataRow1, dataRow2, cols);
-                } else if (columnID === 'primalacRacunaNaziv') {
-                    return slickGridSupport_main.stringComparer(dataRow1, dataRow2, cols);
-                } else if (columnID === 'datumIsteka') {
-                    return slickGridSupport_main.dateComparer(dataRow1, dataRow2, cols);
-                } else if (columnID === 'datumVaziDo') {
-                    return slickGridSupport_main.dateComparer(dataRow1, dataRow2, cols);
-                } else if (columnID === 'datumPlacanja') {
-                    return slickGridSupport_main.dateComparer(dataRow1, dataRow2, cols);
-                }*/
+                }
             };
             
             phonesOverview_dataViewSlick.sort(comparer);
@@ -161,8 +131,7 @@ var phonesOverview_main = {
         });
         
         phonesOverview_gridSlick.init();
-        //phonesOverview_gridSlick.setSortColumn("brojPredmetaPotpun", true);
-        phonesOverview_gridSlick.setSortColumn('id_contacts', true);
+        //phonesOverview_gridSlick.setSortColumn('name', true);
         
         phonesOverview_dataViewSlick.beginUpdate();
         phonesOverview_dataViewSlick.setItems(data);

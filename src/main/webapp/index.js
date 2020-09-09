@@ -9,14 +9,14 @@ var index_main = {
     ////////////////////////////////////////////////////
     
     pageOnLoad: function() {
-        var idUserNameStr = localStorage.getItem("idUserName");
-        if (idUserNameStr !== null) {
+        var idAccountStr = window.localStorage.getItem("idAccount");
+        if (idAccountStr !== null) {
             this.enterPhoneBook();
         }
     },
     
     enterPhoneBook: function() {
-        window.location.href = './phones/phones.jsp'; //TODO !!!
+        window.location.href = './phones/phones.jsp';
     },
     
     ////////////////////////////////////////////////////
@@ -46,7 +46,7 @@ var index_main = {
         this.http = ajaxSupport_main.createHTTP();
         
         this.http.onload = this.indexOnLoad;        
-        this.http.onerror = this.indextOnError;        
+        this.http.onerror = this.indexOnError;        
         this.http.ontimeout = this.indexOnTimeout;
 
         this.http.open('POST', ajaxSupport_main.siteRoot + '/api/services/login', true);
@@ -65,8 +65,8 @@ var index_main = {
                     return;
                 }
                 
-                var idUserNameStr = json.idUserName.toString();
-                window.localStorage.setItem("idUserName", idUserNameStr);
+                var idAccountStr = json.idAccount.toString();
+                window.localStorage.setItem("idAccount", idAccountStr);
                 
                 modalSupport_main.setComponentAccessibility(true);
                 index_main.enterPhoneBook();

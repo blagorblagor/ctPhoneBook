@@ -1,9 +1,3 @@
-<%-- 
-    Document   : modulePredmeti
-    Created on : Sep 2, 2019, 1:03:30 PM
-    Author     : goran
---%>
-
 <%@page import="rs.co.ct.ctPhoneBook.accessories.PseudoVersion"%>
 <%
     response.setHeader("Pragma", "no-cache");
@@ -50,7 +44,6 @@
         <script type="text/javascript" src="../jsAndCssSupport/ajaxSupport.js<%=versionJsCss%>"></script>
         <script type="text/javascript" src="../jsAndCssSupport/slickGridSupport.js<%=versionJsCss%>"></script>
         <script type="text/javascript" src="../jsAndCssSupport/accessories.js<%=versionJsCss%>"></script>
-        <!--<script type="text/javascript" src="../jsAndCssSupport/autocompleteList.js<%=versionJsCss%>"></script>-->
         <script type="text/javascript" src="../jsAndCssSupport/modalSupport.js<%=versionJsCss%>"></script>
         
         <!--  **************************************************  -->
@@ -66,20 +59,24 @@
         <script type="text/javascript" src="./phonesOverview.js<%=versionJsCss%>"></script>
         
         <script type="text/javascript">
-            function onPageLoad() {
-                /*var alreadyLoaded = window.localStorage.getItem("predmetiAreLoaded");
-                if (alreadyLoaded === '1') {
-                    window.location = '../entryPanel/entryPanel.jsp';
+            function onPageLoad() {        
+                var idAccountStr = window.localStorage.getItem("idAccount");
+                if (idAccountStr === null) {
+                    window.location.href = "../index.jsp";
                     return;
                 }
-                window.localStorage.setItem("predmetiAreLoaded", '1');
                 
-                phonesAddModufy_main.getDataFromSession();
-                phonesAddModufy_main.setElementsArray();*/
+                var idAccount = parseInt(idAccountStr);
+                if (idAccount <= 0) {
+                    window.location.href = "../index.jsp";
+                    return;
+                }
+        
+                phonesAddModify_main.setElementsArray();
                 
                 window.setTimeout(function() {
-                    window.document.getElementById('idPredmetiPregled').style.display = 'inline-block';
-                    phonesGeometry_main.setPregledGeometry('idPredmetiDivDugmadPregled', 'idPredmetiDataTable');
+                    window.document.getElementById('idContactsOverview').style.display = 'inline-block';                    
+                    phonesList_main.readContacts();
                 }, 100);
             }
             
@@ -96,15 +93,15 @@
         
         <div id='idPageDiv' class='pageDiv'>
             
-            <div id='idPredmetiPregled' class='formPhones'>
-                <div id='idPredmetiDivDugmadPregled' class='phonesDivButtons'>
-                    <button id='idDugmeDodavanjePregledi' class='buttonsPhones' onclick='javascript:phonesList_main.clickOnListAdd();'>Add</button>
-                    <button id='idDugmeIzmenaPregledi' class='buttonsPhones' disabled='true' onclick='javascript:phonesList_main.clickOnPreglediModify();'>Edit</button>
-                    <button id='idDugmeUklanjanjePregledi' class='buttonsPhones' disabled='true' onclick='javascript:phonesList_main.clickOnPreglediRevoke();'>Delete</button>
-                    <button id='idDugmeOdjava' class='buttonsSpecials' onclick='javascript:accessories_main.logout();'>Logout</button>
+            <div id='idContactsOverview' class='formPhones'>
+                <div id='idContactsDivButtonsOverview' class='phonesDivButtons'>
+                    <button id='idButtonAddOverview' class='buttonsPhones' onclick='javascript:phonesList_main.clickOnListAdd();'>Add</button>
+                    <button id='idButtonModifyOverview' class='buttonsPhones' disabled='true' onclick='javascript:phonesList_main.clickOnContactsModify();'>Edit</button>
+                    <button id='idButtonDeleteOverview' class='buttonsPhones' disabled='true' onclick='javascript:phonesList_main.clickOnContactsDelete();'>Delete</button>
+                    <button id='idButtonLogoutOverview' class='buttonsSpecials' onclick='javascript:accessories_main.logout();'>Logout</button>
                 </div>
                 
-                <div id='idPredmetiDataTable' class='predmetiDataTable'>
+                <div id='idContactsDataTable' class='contactsDataTable'>
                 </div>
             </div>
             
@@ -124,7 +121,7 @@
                             </div>
                             <div id='idNameDiv' class='elementInputAdditional'>
                                 <input id='idNameInput' class='inputOpstiUnos' type='text' autocomplete='off' maxlength="50"
-                                 onkeyup='javascript:phonesAddModufy_main.elementChanged(this, "idNameError");'/>
+                                 onkeyup='javascript:phonesAddModify_main.elementChanged(this, "idNameError");'/>
                             </div>
                             <div id='idNameError' class='elementError'>
                             </div>
@@ -155,7 +152,7 @@
                             </div>
                             <div id='idPhoneInputDiv' class='elementInputAdditional'>
                                 <input id='idPhoneInput' class='inputOpstiUnos' autocomplete='off' type='text' maxlength="25"
-                                 onkeyup='javascript:phonesAddModufy_main.elementChanged(this, "idPhoneError");'/>
+                                 onkeyup='javascript:phonesAddModify_main.elementChanged(this, "idPhoneError");'/>
                             </div>
                             <div id='idPhoneError' class='elementError'>
                             </div>

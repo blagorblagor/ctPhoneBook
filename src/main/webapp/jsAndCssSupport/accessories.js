@@ -150,7 +150,7 @@ var accessories_main = {
     //////////////////////////////////////////
     
     logout: function() {
-        window.localStorage.removeItem("idUserName");
+        window.localStorage.removeItem("idAccount");
         window.location = ajaxSupport_main.siteRoot + '/index.jsp';
     }
     

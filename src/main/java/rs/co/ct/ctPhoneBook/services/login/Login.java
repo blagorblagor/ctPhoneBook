@@ -17,6 +17,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.apache.commons.dbutils.DbUtils;
 import org.json.JSONObject;
 import rs.co.ct.ctPhoneBook.accessories.DBAccessories;
 
@@ -47,6 +48,8 @@ public class Login {
         DBAccessories dBAccessories = new DBAccessories();
         Connection conn = dBAccessories.getConnection();
         String secretKey = dBAccessories.getSecretKey();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         if (conn != null) {
             try {
                 JSONObject jsonEntry = new JSONObject(jsonEntryStr);
@@ -62,16 +65,16 @@ public class Login {
                 query += " AND ";
                 query += "pgp_sym_decrypt(user_password::bytea, ?) LIKE ?";  //Database must have module pgcrypto installed !!!
 
-                PreparedStatement stmt = conn.prepareStatement(query);
+                stmt = conn.prepareStatement(query);
                 stmt.setString(1, username.toLowerCase()); 
                 stmt.setString(2, secretKey); 
                 stmt.setString(3, password);
-                ResultSet rs = stmt.executeQuery(); 
+                rs = stmt.executeQuery(); 
                 
                 if (rs.next()) {
-                    int idUserName = rs.getInt("id_accounts");                    
+                    int idAccount = rs.getInt("id_accounts");                    
                     resultJSON.put("status", "Success");
-                    resultJSON.put("idUserName", idUserName);
+                    resultJSON.put("idAccount", idAccount);
                 } else {
                     resultJSON.put("status", "AccountDoesNotExist"); 
                     resultJSON.put("problemMessage", "Username or password, or both, are not valid.");
@@ -84,6 +87,16 @@ public class Login {
         } else {
             resultJSON.put("status", "CannotConnectToDatabase"); 
             resultJSON.put("problemMessage", "Fatal error. Problem with connecting to database");
+        }
+        
+        if (conn != null) {
+            DbUtils.closeQuietly(conn);
+        }
+        if (stmt != null) {
+            DbUtils.closeQuietly(stmt);
+        }
+        if (rs != null) {
+            DbUtils.closeQuietly(rs);
         }
         
         String returnJSONStr = resultJSON.toString();        
