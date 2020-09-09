@@ -18,7 +18,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.json.JSONObject;
-import rs.co.ct.ctPhoneBook.accessories.DBConnection;
+import rs.co.ct.ctPhoneBook.accessories.DBAccessories;
 
 /**
  * REST Web Service
@@ -44,8 +44,9 @@ public class Login {
     public Response checkAccountCredentials(String jsonEntryStr) {
         JSONObject resultJSON = new JSONObject();  
         
-        DBConnection dBConnection = new DBConnection();
-        Connection conn = dBConnection.getConnection();
+        DBAccessories dBAccessories = new DBAccessories();
+        Connection conn = dBAccessories.getConnection();
+        String secretKey = dBAccessories.getSecretKey();
         if (conn != null) {
             try {
                 JSONObject jsonEntry = new JSONObject(jsonEntryStr);
@@ -59,11 +60,12 @@ public class Login {
                 query += " WHERE ";
                 query += "lower(user_name) = ?";
                 query += " AND ";
-                query += "user_password = ?";
+                query += "pgp_sym_decrypt(user_password::bytea, ?) LIKE ?";  //Database must have module pgcrypto installed !!!
 
                 PreparedStatement stmt = conn.prepareStatement(query);
                 stmt.setString(1, username.toLowerCase()); 
-                stmt.setString(2, password); 
+                stmt.setString(2, secretKey); 
+                stmt.setString(3, password);
                 ResultSet rs = stmt.executeQuery(); 
                 
                 if (rs.next()) {

@@ -18,7 +18,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.json.JSONObject;
-import rs.co.ct.ctPhoneBook.accessories.DBConnection;
+import rs.co.ct.ctPhoneBook.accessories.DBAccessories;
 
 /**
  * REST Web Service
@@ -45,8 +45,9 @@ public class NewAccount {
     public Response addNewAccountIntoDB(String jsonEntryStr) {
         JSONObject resultJSON = new JSONObject();  
         
-        DBConnection dBConnection = new DBConnection();
-        Connection conn = dBConnection.getConnection();
+        DBAccessories dBAccessories = new DBAccessories();
+        Connection conn = dBAccessories.getConnection();
+        String secretKey = dBAccessories.getSecretKey();
         if (conn != null) {
             try {
                 JSONObject jsonEntry = new JSONObject(jsonEntryStr);
@@ -78,12 +79,13 @@ public class NewAccount {
                     query = "INSERT INTO accounts (";
                     query += "user_name, user_password";
                     query += ") VALUES (";
-                    query += "?, ?";
+                    query += "?, pgp_sym_encrypt(?, ?)"; //Database must have module pgcrypto installed !!!
                     query += ")";
                     
                     stmt = conn.prepareStatement(query);
                     stmt.setString(1, username);
                     stmt.setString(2, password);
+                    stmt.setString(3, secretKey);
                     int numberOfAddedAcounts = stmt.executeUpdate(); 
                     
                     if (numberOfAddedAcounts == 1) {

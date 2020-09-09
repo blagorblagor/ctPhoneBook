@@ -13,14 +13,20 @@ import java.sql.SQLException;
  *
  * @author goran
  */
-public class DBConnection {
+public class DBAccessories {
     
-    public DBConnection() {
+    public DBAccessories() {
         //
     }
     
+    private final String secretKey = "veryTopSecret.123";
+
+    public String getSecretKey() {
+        return secretKey;
+    }
+    
     //Change if needed. Assumed that database server is on the same server as web application server,
-    //and tht database server runs on default postgres port (5432)
+    //and that database server runs on default postgres port (5432), and with credentials set below
     private final String computerName = "localhost";
     private final String dbUserName = "postgres";
     private final String dbPassword = "kvaka22";
