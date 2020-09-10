@@ -1,4 +1,4 @@
-/* global phonesOverview_main, phonesAddModify_main */
+/* global phonesOverview_main, phonesAddModify_main, phonesList_main */
 
 var phonesGeometry_main = {
     
@@ -54,7 +54,7 @@ var phonesGeometry_main = {
         elementiContactsDataTable.style.width = gridWidth.toString() + 'px';
         elementiContactsDataTable.style.height = gridHeight.toString() + 'px';
         
-        phonesOverview_main.createAndPopulateGrid('idContactsDataTable', phonesAddModify_main.predmetiListaOverview);
+        phonesOverview_main.createAndPopulateGrid('idContactsDataTable', phonesList_main.contactsListOverview);
     },
     
     adjustFormAddChange: function(buttonsDivHeight) {

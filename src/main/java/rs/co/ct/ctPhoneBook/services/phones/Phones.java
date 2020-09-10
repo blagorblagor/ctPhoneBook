@@ -239,14 +239,16 @@ public class Phones {
                 try {
                     conn.commit();
                 } catch (SQLException ex) {
+                    resultJSON.remove("status");
                     resultJSON.put("status", "CannotAddIntoDatabase");
                     resultJSON.put("problemMessage", "Fatal error. Cannot add this contact into database (5)");
+                    resultJSON.put("problemMessageAdditional", "Fatal error. Cannot rollback data.");
                 }
             } else {
                 try {
                     conn.rollback();
                 } catch (SQLException ex) {
-                    resultJSON.put("problemMessageAdditiona", "Fatal error. Cannot add this contact into database. Cannot rollback data.");
+                    resultJSON.put("problemMessageAdditional", "Fatal error. Cannot rollback data.");
                 }
             } 
         } else {
@@ -339,7 +341,6 @@ public class Phones {
                     resultJSON.put("problemMessage", "Fatal error. Cannot update this contact (2)");
                 }
             } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
                 resultJSON.put("status", "CannotUpdateDatabase");
                 resultJSON.put("problemMessage", "Fatal error. Cannot update this contact (3)");
             } 
@@ -349,14 +350,104 @@ public class Phones {
                 try {
                     conn.commit();
                 } catch (SQLException ex) {
+                    resultJSON.remove("status");
                     resultJSON.put("status", "CannotUpdateDatabase");
                     resultJSON.put("problemMessage", "Fatal error. Cannot update this contact (4)");
+                    resultJSON.put("problemMessageAdditional", "Fatal error. Cannot rollback data.");
                 }
             } else {
                 try {
                     conn.rollback();
                 } catch (SQLException ex) {
-                    resultJSON.put("problemMessageAdditiona", "Fatal error. Cannot update this contact. Cannot rollback data.");
+                    resultJSON.put("problemMessageAdditional", "Fatal error. Cannot rollback data.");
+                }
+            } 
+        } else {
+            resultJSON.put("status", "CannotConnectToDatabase"); 
+            resultJSON.put("problemMessage", "Fatal error. Problem with connecting to database");
+        }
+        
+        if (conn != null) {
+            DbUtils.closeQuietly(conn);
+        }
+        if (stmt != null) {
+            DbUtils.closeQuietly(stmt);
+        }
+        if (rs != null) {
+            DbUtils.closeQuietly(rs);
+        }
+        
+        String returnJSONStr = resultJSON.toString();        
+        return Response.status(200).entity(returnJSONStr).build();
+    }
+
+    @POST
+    @Path("phones/delete")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteContact(String jsonEntryStr) {
+        JSONObject resultJSON = new JSONObject();  
+        
+        DBAccessories dBAccessories = new DBAccessories();
+        Connection conn = dBAccessories.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        if (conn != null) {
+            try {
+                conn.setAutoCommit(false);
+                
+                JSONObject jsonEntry = new JSONObject(jsonEntryStr);
+                
+                int idContact = (Integer)jsonEntry.get("idContactObj");
+                int idPhone = (Integer)jsonEntry.get("idPhoneObj");
+                
+                String query = "DELETE FROM phones";
+                query += " WHERE ";
+                query += "id_phones = ?";
+                
+                stmt = conn.prepareStatement(query);
+                stmt.setInt(1, idPhone);
+                int numberOfDeletedContacts = stmt.executeUpdate();
+                
+                if (numberOfDeletedContacts == 1) {
+                    query = "DELETE FROM contacts";
+                    query += " WHERE ";
+                    query += "id_contacts = ?"; 
+
+                    stmt = conn.prepareStatement(query);
+                    stmt.setInt(1, idContact);
+                    int numberOfDeletedPhones = stmt.executeUpdate();
+
+                    if (numberOfDeletedPhones == 1) {
+                        resultJSON.put("status", "Success"); 
+                    } else {
+                        resultJSON.put("status", "CannotDeleteInDatabase"); 
+                        resultJSON.put("problemMessage", "Fatal error. Cannot delete this contact (1)");
+                    }
+                } else {
+                    resultJSON.put("status", "CannotDeleteInDatabase");
+                    resultJSON.put("problemMessage", "Fatal error. Cannot delete this contact (2)");
+                }
+            } catch (SQLException ex) {
+                resultJSON.put("status", "CannotDeleteInDatabase");
+                resultJSON.put("problemMessage", "Fatal error. Cannot delete this contact (3)");
+            } 
+            
+            String status = resultJSON.getString("status");
+            if (status.compareTo("Success") == 0) {
+                try {
+                    conn.commit();
+                } catch (SQLException ex) {
+                    resultJSON.remove("status");
+                    resultJSON.put("status", "CannotDeleteInDatabase");
+                    resultJSON.put("problemMessage", "Fatal error. Cannot delete this contact (4)");
+                    resultJSON.put("problemMessageAdditional", "Fatal error. Cannot rollback data.");
+                }
+            } else {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    resultJSON.put("problemMessageAdditional", "Fatal error. Cannot rollback data.");
                 }
             } 
         } else {

@@ -60,7 +60,7 @@
         
         <script type="text/javascript">
             function onPageLoad() {        
-                var idAccountStr = window.localStorage.getItem("idAccount");
+                /*var idAccountStr = window.localStorage.getItem("idAccount");
                 if (idAccountStr === null) {
                     window.location.href = "../index.jsp";
                     return;
@@ -77,19 +77,19 @@
                 window.setTimeout(function() {
                     window.document.getElementById('idContactsOverview').style.display = 'inline-block';                    
                     phonesList_main.readContacts();
-                }, 100);
+                }, 100);*/
             }
             
-            function onPageResize() {
-                setTimeout(function() {
+            /*function onPageResize() {
+                window.setTimeout(function() {
                     phonesList_main.pageResize();
                 }, 100);
-            }
+            }*/
         </script>
         
     </head>
     
-    <body onload='javascript:onPageLoad();' onresize='javascript:onPageResize();'>
+    <body onload='phonesList_main.pageLoad();' onresize='javascript:phonesList_main.pageResize();'>
         
         <div id='idPageDiv' class='pageDiv'>
             

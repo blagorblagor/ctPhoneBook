@@ -4,46 +4,10 @@ var phonesAddModify_main = {
     
     mode: null, //'adding' or 'modifying'
     
-    predmetiLista: [],
-    predmetiListaOverview: [],
-    
-    rowSelectedJSON: null,
-    predmetJSON: null,
-    indexRowSelected: null,
-    
-    predmetNamesArray: [],
-    predmetNamesIDs: [],
-    
-    pravnaLicaArray: [],
-    pravnaLicaIDsArray: [],
-    pravnaLicaNamesArray: [],
-    pravnaLicaPIBsArray: [],
-    
-    vrstaPredmeta: null,
-    vrstaPredmetaID: null,
-    name: null, //////////////////////
-    nickname: null, ////////////////////
-    surname: null, ///////////////////////
-    datumPodnosenja: null,
-    datumPodnosenjaLocal: null,
-    phone: null,  ///////////////////////
-    nosilacPravaID: null,
-    nosilacPravaNaziv: null,
-    nosilacPravaPIB: null,
-    zastupa: null,
-    zastupaID: null,
-    zastupaNaziv: null,
-    zastupaPIB: null,
-    racunDobija: null,
-    racunDobijaID: null,
-    racunDobijaNaziv: null,
-    racunDobijaPIB: null,
-    datumIsteka: null,
-    datumIstekaLocal: null,
-    datumVaziDo: null,
-    datumVaziDoLocal: null,
-    datumPlacanja: null,
-    datumPlacanjaLocal: null,
+    name: null,
+    nickname: null,
+    surname: null,
+    phone: null,
     
     elementsWidthError: [],
     elementsAll: [],
@@ -52,42 +16,6 @@ var phonesAddModify_main = {
     http: null,
     
     /////////////////////////////////////////////
-    
-    getDataFromSession: function() {
-        this.predmetNamesArray = accessories_main.createStringArrayFromSessionObj('predmetNames');
-        this.predmetNamesIDs = accessories_main.createIntegerArrayFromSessionObj('predmetIDs');
-        
-        this.pravnaLicaArray = accessories_main.createStringArrayFromSessionObj('pravnaLica');
-        this.pravnaLicaIDsArray = accessories_main.createIntegerArrayFromSessionObj('pravnaLicaIDs');
-        this.pravnaLicaNamesArray = accessories_main.createStringArrayFromSessionObj('pravnaLicaNames');
-        this.pravnaLicaPIBsArray = accessories_main.createStringArrayFromSessionObj('pravnaLicaPIBs');
-        
-        /////////////////////////////////////////////
-        
-        this.predmetiLista = accessories_main.createJSONarrayFromSessionObj('predmetiLista');
-        this.createPredmetiListOverview();
-    },
-    
-    createPredmetiListOverview: function() {
-        for (var i = 0; i < this.predmetiLista.length; i++) {
-            var predmetJSON = this.predmetiLista[i];
-            var predmetJSONoverview = {
-                id: predmetJSON.id,
-                brojPredmetaPotpun: predmetJSON.brojPredmetaPotpun,
-                name: predmetJSON.name, //////////////////////////////
-                surname: predmetJSON.surname,
-                nickname: predmetJSON.nickname,
-                datumPodnosenja: predmetJSON.datumPodnosenja,
-                nosilacPravaNaziv: predmetJSON.nosilacPravaNaziv,
-                zastupnikNaziv: predmetJSON.zastupnikNaziv,
-                primalacRacunaNaziv: predmetJSON.primalacRacunaNaziv,
-                datumIsteka: predmetJSON.datumIsteka,
-                datumVaziDo:predmetJSON.datumVaziDo,
-                datumPlacanja: predmetJSON.datumPlacanja
-            };            
-            this.predmetiListaOverview.push(predmetJSONoverview);
-        }
-    },
     
     setElementsArray: function() {
         this.elementsAll.push('idNameInput');
@@ -114,7 +42,7 @@ var phonesAddModify_main = {
         if (this.mode === 'adding') {
             this.addPhoneIntoDatabase();
         } else if (this.mode === 'modifying') {
-            this.midifyPhoneInDatabase();
+            this.modifyPhoneInDatabase();
         }
     },
     
@@ -239,7 +167,7 @@ var phonesAddModify_main = {
     
     //////////////////////////////////////
     
-    midifyPhoneInDatabase: function() {
+    modifyPhoneInDatabase: function() {
         modalSupport_main.setComponentAccessibility(false);
         
         var name =  window.document.getElementById('idNameInput').value;
