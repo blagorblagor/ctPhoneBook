@@ -60,7 +60,7 @@ VII HOW TO START AND USE...
 server and web application on web application
 server, open web browser and go to:
 <host_of_ctPhoneBook>/ctPhoneBook-1.0
-then create anccount, then manage your
+then create account, then manage your
 contacts.
 
 
