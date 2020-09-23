@@ -124,6 +124,7 @@ var phonesList_main = {
         window.document.getElementById('idContactsOverview').style.display = 'none';
         
         phonesAddModify_main.mode = 'modifying';
+        window.document.getElementById('idPhonesAddChangeTitle').innerHTML = 'Modify Contact';
         
         phonesGeometry_main.setContactGeometry('idPhonesDivButtonsAddModify', 'idPhonesFormAddChange');
         window.document.getElementById('idPhonesAddModify').style.display = 'inline-block';

@@ -38,7 +38,6 @@
         
         <!--  **************************************************  -->
         
-        <!--<link rel="stylesheet" type="text/css" href="../jsAndCssSupport/autocompleteList.css<%=versionJsCss%>" -->
         <link rel="stylesheet" type="text/css" href="../jsAndCssSupport/modalSupport.css<%=versionJsCss%>" />
         
         <script type="text/javascript" src="../jsAndCssSupport/ajaxSupport.js<%=versionJsCss%>"></script>
@@ -58,38 +57,9 @@
         <script type="text/javascript" src="./phonesAddModify.js<%=versionJsCss%>"></script>
         <script type="text/javascript" src="./phonesOverview.js<%=versionJsCss%>"></script>
         
-        <script type="text/javascript">
-            function onPageLoad() {        
-                /*var idAccountStr = window.localStorage.getItem("idAccount");
-                if (idAccountStr === null) {
-                    window.location.href = "../index.jsp";
-                    return;
-                }
-                
-                var idAccount = parseInt(idAccountStr);
-                if (idAccount <= 0) {
-                    window.location.href = "../index.jsp";
-                    return;
-                }
-        
-                phonesAddModify_main.setElementsArray();
-                
-                window.setTimeout(function() {
-                    window.document.getElementById('idContactsOverview').style.display = 'inline-block';                    
-                    phonesList_main.readContacts();
-                }, 100);*/
-            }
-            
-            /*function onPageResize() {
-                window.setTimeout(function() {
-                    phonesList_main.pageResize();
-                }, 100);
-            }*/
-        </script>
-        
     </head>
     
-    <body onload='phonesList_main.pageLoad();' onresize='javascript:phonesList_main.pageResize();'>
+    <body onload='javascript:phonesList_main.pageLoad();' onresize='javascript:phonesList_main.pageResize();'>
         
         <div id='idPageDiv' class='pageDiv'>
             
